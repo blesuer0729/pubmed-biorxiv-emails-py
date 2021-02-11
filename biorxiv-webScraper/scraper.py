@@ -80,7 +80,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
 email_list = open("email_list.txt", "w+")
 
 # fill in the range depending on which pages of the list you are scraping
-for num in range (1,19):
+for num in range (1,36):
     # Main content page
     main_url = "https://connect.biorxiv.org/relate/content/181?page="+str(num)
 
