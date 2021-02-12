@@ -1,5 +1,6 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+import argparse
 
 def scrape_medrx(span):
     medrx_article_url = "https://www.medrxiv.org/content/"
@@ -77,8 +78,14 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
 # email_list.txt is the final file shipped for import
 email_list = open("email_list.txt", "w+")
 
+# argparse library for getting page range
+parser = argparse.ArgumentParser()
+parser.add_argument("--start", type=int, help="The first page so start the range from")
+parser.add_argument("--stop", type=int, help="The last page that the range stops on")
+args = parser.parse_args()
+
 # fill in the range depending on which pages of the list you are scraping
-for num in range (1,36):
+for num in range (args.start, args.stop):
     # Main content page
     main_url = "https://connect.biorxiv.org/relate/content/181?page="+str(num)
 
