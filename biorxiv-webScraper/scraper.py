@@ -9,7 +9,7 @@ def scrape_medrx(span):
     # split is using an EM DASH 
     article_url = medrx_article_url + string.split(" —")[0] + "v1.article-info"
 
-    print(article_url)
+    # Get markup and read it into BS
     page = urlopen(article_url)
     html_bytes = page.read()
     html_content = html_bytes.decode("utf-8")
@@ -25,7 +25,6 @@ def scrape_medrx(span):
     author_email = email_string.replace("{at}", "@")
 
     email_list.write(author_email + " " + author_name + "\n")
-    print(article_url + " done.")
 
 def scrape_biorx(span):
     biorx_article_url = "https://www.biorxiv.org/content/"
@@ -51,7 +50,6 @@ def scrape_biorx(span):
     author_email = email_string.replace("{at}", "@")
 
     email_list.write(author_email + " " + author_name + "\n")
-    print(article_url + " done.")
 
 # Print iterations progress
 # THIS FUNCTION IS FROM - https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
@@ -96,6 +94,7 @@ for num in range (1,36):
     print("")
     print("Page " + str(num))
     print("_________________")
+    print("Working..")
     # test each article for its containing site
     for span in get_article_metadata:
         link = span.a['href']
@@ -104,6 +103,7 @@ for num in range (1,36):
         elif "biorx" in link:
             scrape_biorx(span)
         else:
-            print("ERROR: " + link + " was not scraped.")
-
+            print("ERROR: " + link + " was not scraped because it's site is not supported.")
+    print("Page " + str(num) + " done.")
+    
 email_list.close()
