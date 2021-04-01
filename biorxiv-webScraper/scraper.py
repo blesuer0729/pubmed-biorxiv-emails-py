@@ -2,6 +2,15 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import argparse
 
+# argparse library for getting page range
+parser = argparse.ArgumentParser()
+parser.add_argument("--start", type=int, help="The first page so start the range from")
+parser.add_argument("--stop", type=int, help="The last page that the range stops on")
+args = parser.parse_args()
+
+# email_list.txt is the final file shipped for import
+email_list = open("email_list.txt", "w+")
+
 def scrape_medrx(span):
     medrx_article_url = "https://www.medrxiv.org/content/"
 
@@ -51,38 +60,6 @@ def scrape_biorx(span):
     author_email = email_string.replace("{at}", "@")
 
     email_list.write(author_email + " " + author_name + "\n")
-
-# Print iterations progress
-# THIS FUNCTION IS FROM - https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
-    
-    # Call in a loop to create terminal progress bar
-    # @params:
-    #     iteration   - Required  : current iteration (Int)
-    #     total       - Required  : total iterations (Int)
-    #     prefix      - Optional  : prefix string (Str)
-    #     suffix      - Optional  : suffix string (Str)
-    #     decimals    - Optional  : positive number of decimals in percent complete (Int)
-    #     length      - Optional  : character length of bar (Int)
-    #     fill        - Optional  : bar fill character (Str)
-    #     printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
-    
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-    filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
-    # Print New Line on Complete
-    if iteration == total: 
-        print()
-
-# email_list.txt is the final file shipped for import
-email_list = open("email_list.txt", "w+")
-
-# argparse library for getting page range
-parser = argparse.ArgumentParser()
-parser.add_argument("--start", type=int, help="The first page so start the range from")
-parser.add_argument("--stop", type=int, help="The last page that the range stops on")
-args = parser.parse_args()
 
 # fill in the range depending on which pages of the list you are scraping
 for num in range (args.start, args.stop):
