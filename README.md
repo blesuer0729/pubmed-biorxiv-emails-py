@@ -1,3 +1,5 @@
-# Web Scrapers
+# Biorxiv Web Scraper
 
-Grab emails and add them into a text file that is importable into Constant Contact
+https://www.biorxiv.org/
+
+Grab author emails from the COVID-19 SARS-CoV-2 subject area and create a .txt list that is importable into Constant Contact.
