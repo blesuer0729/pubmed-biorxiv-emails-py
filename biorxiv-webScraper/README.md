@@ -1,28 +1,16 @@
-# Content to scrape 
-url - https://connect.biorxiv.org/relate/content/181 
+# Biorxiv Web Scraper
 
-### scraping pages (1-849)
-url and loop x - https://connect.biorxiv.org/relate/content/181?page=x
+This app was designed to reduce the manual labor involved in going through each article and manually copying and pasting the author name / author email into a file before importing them all to Constant Contact.
 
-### accessing links from the list
-href original content link from main page (ex: http://medrxiv.org/cgi/content/short/2020.09.04.20188532)
-the link is transformed when you visit the page
-content page new link (ex: https://www.medrxiv.org/content/10.1101/2020.09.04.20188532v1.article-info)
+## Dependencies
 
-### author info
-span class is em-addr for corresponding author email
-(ex: <span class="em-addr">test.test{at}fsa.uac.bj</span>)
+The app requires you install BeautifulSoup4
+```bash
+apt-get install python3-bs4
+```
 
-span class is name for corresponding author first and last
-(ex: <span class="name"> Sayak Roy </span>)
+## Running
 
-### accessing emails when script is finished
-emails are printed line by line in output.txt
-after having the @ symbol replaced in the string
-emails will be ready for CC import
-
-### Tracking progress
-
-printProgressBar(0, 1, prefix="Progress:", suffix="Scrape Complete.", length=50)
-
-printProgressBar(x + 1, 1, prefix="Progress:", suffix="Scrape Complete.", length=50)
+```bash
+python3 scraper.py --start <first page> --stop <last page>
+```
