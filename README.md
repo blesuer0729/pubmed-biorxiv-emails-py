@@ -5,7 +5,7 @@ scraper.py replaces the manual process of gathering author names / author emails
 Previously, the non-technical end user was copying the names one by one per article.
 
 ## Supported sites
-# Biorxiv
+Biorxiv
 https://www.biorxiv.org/
 
 ## Dependencies
