@@ -35,22 +35,24 @@ def scrape_biorxiv(span, url):
 
     email_list.write(author_email + " " + author_name + "\n")
 
+def scrap_pubmed(url):
+    print(url)
+
 # determine which site the user wanted to scrape first
 if (args.site == "biorxiv"):
-    print("")
-    print("Biorxiv Covid-19 Sars-Cov-2")
+    print("\nBiorxiv preprints related to Covid-19 and Sars-Cov-2")
     # fill in the range depending on which pages of the list you are scraping
     for num in range (args.start, args.stop + 1):
         # Main content page
         main_url = "https://connect.biorxiv.org/relate/content/181?page="+str(num)
 
-        # open the content page to gather url list
+        # Give the HTML content Beautiful Soup
         page = urlopen(main_url)
         html_bytes = page.read()
         html_content = html_bytes.decode("utf-8")
         soup_content = BeautifulSoup(html_content, "html.parser")
 
-        # find url extensions for dates and metadata of an article
+        # find url extensions for each article
         get_article_metadata = soup_content.find_all("span", "highwire-cite-metadata-journal")
 
         print("\nPage " + str(num))
@@ -64,10 +66,32 @@ if (args.site == "biorxiv"):
             elif "biorx" in link:
                 scrape_biorxiv(span, "https://www.biorxiv.org/content/")
             else:
-                print("WARNING -  " + link + " was not scraped because it's site (" + link + ") needs to be added to the biorxiv scraper")
+                print("WARNING -  " + link + " was not scraped because it's site needs to be added to the biorxiv scraper")
         print("done.")
+elif(args.site == "pubmed"):
+    print("\nPubMed articles referencing Covid-19 and Sars-Cov-2")
+    # fill in the range depending on which pages of the list you are scraping
+    for num in range(args.start, args.stop +1):
+        pubmed_url = "https://pubmed.ncbi.nlm.nih.gov/?term=covid-19&page="+str(num)
+
+        # Give the HTML content to Beautiful Soup
+        page = urlopen(pubmed_url)
+        html_bytes = page.read()
+        html_content = html_bytes.decode("utf-8")
+        soup_content = BeautifulSoup(html_content, "html.parser")
+
+        # Get each article element off the page
+        get_article_metadata = soup_content.find_all("a","docsum-title")
+
+        print("\nPage " + str(num))
+        print("_________________")
+        print("scraping..")
+        # Use the article ID's to scrape their author names
+        for article in range(len(get_article_metadata)):
+            link = get_article_metadata[article]["href"]
+            scrap_pubmed("https://pubmed.ncbi.nlm.nih.gov/" + link)
+
 else:
     print("The site " + args.site + " is not yet supported by the scraper.")
 
 email_list.close()
-print("\nrun command 'cat email_list.txt' to see results")
