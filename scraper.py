@@ -95,3 +95,4 @@ else:
     print("The site " + args.site + " is not yet supported by the scraper.")
 
 email_list.close()
+print("\nrun command 'cat email_list.txt' to see results")
