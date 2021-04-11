@@ -1,2 +1,2 @@
 # gitignore
-email_list.txt
+*.txt
