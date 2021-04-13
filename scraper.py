@@ -37,7 +37,7 @@ def scrape_biorxiv_article(span, url):
 
     biorxiv_email_list.write(author_email + " " + author_name + "\n")
 
-def scrape_pubmed_article(url):
+def scrape_pubmed_article(url, store_emails):
     # Get soup content of article page
     page = requests.get(url).text
     soup_content = BeautifulSoup(page, "html.parser")
@@ -53,8 +53,12 @@ def scrape_pubmed_article(url):
         # The source code of the article has author emails in reverse
         # seems like they tried to confuse anyone looking to scrape them?
         emails_in_reverse = soup_content.findAll("a", {"class" : "oemail"})
+        temp_emails = []
         for email_tag in range(len(emails_in_reverse)):
-            pubmed_email_list.write(emails_in_reverse[email_tag]["data-email"][::-1] + "\n")
+             temp_emails.append(emails_in_reverse[email_tag]["data-email"][::-1])
+             for e in temp_emails:
+                 if e not in store_emails:
+                     store_emails.append(e)
 
 ## 
 # Main page logic
@@ -104,9 +108,12 @@ elif(args.site == "pubmed"):
         print("_________________")
         print("scraping..")
         # Use the article ID's to scrape their author names
+        store_emails = []
         for article in range(len(get_article_metadata)):
             article_id = get_article_metadata[article]["href"]
-            scrape_pubmed_article("https://pubmed.ncbi.nlm.nih.gov" + article_id)
+            scrape_pubmed_article("https://pubmed.ncbi.nlm.nih.gov" + article_id, store_emails)
+        for email in store_emails:
+            pubmed_email_list.write(email + "\n")
 else:
     print("The site " + args.site + " is not yet supported by the scraper.")
 
