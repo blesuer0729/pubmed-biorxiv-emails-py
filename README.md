@@ -13,7 +13,7 @@ https://pubmed.ncbi.nlm.nih.gov/
 
 ## Dependencies
 
-The app requires you install the BeautifulSoup4 python library
+The app uses the requests, BeautifulSoup4, and argparse libraries
 
 ## Running
 
