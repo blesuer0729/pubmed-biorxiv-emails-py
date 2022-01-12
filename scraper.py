@@ -32,7 +32,7 @@ def biorxiv(file):
             if "medrx" in link:
                 scrape_biorxiv_article(file, span, "https://www.medrxiv.org/content/")
             elif "biorx" in link:
-                scrape_biorxiv_article(span, "https://www.biorxiv.org/content/")
+                scrape_biorxiv_article(file, span, "https://www.biorxiv.org/content/")
             else:
                 print("WARNING -  " + link + " was not scraped because it's site needs to be added to the biorxiv scraper")
         print("done.")
@@ -72,14 +72,22 @@ def scrape_biorxiv_article(file, span, url):
 
     # append the corresponding author name before the email 
     name_tag = soup_content.find("span", "name")
-    author_name = name_tag.string.extract()
+    if name_tag is not None:
+        author_name = name_tag.string.extract()
 
-    # Clean and fix the email as a string with @ included
-    email_tag = soup_content.find("span", "em-addr")
-    email_string = email_tag.string.extract()
-    author_email = email_string.replace("{at}", "@")
+        # Clean and fix the email as a string with @ included
+        email_tag = soup_content.find("span", "em-addr")
+        email_string = email_tag.string.extract()
+        author_email = email_string.replace("{at}", "@")
 
-    file.write(author_email + " " + author_name + "\n")
+        file.write(author_email + " " + author_name + "\n")
+    else:
+        # Clean and fix the email as a string with @ included
+        email_tag = soup_content.find("span", "em-addr")
+        email_string = email_tag.string.extract()
+        author_email = email_string.replace("{at}", "@")
+
+        file.write(author_email + "\n")
 
 def scrape_pubmed_article(file, url, temp_emails):
     # Get soup content of article page
