@@ -24,7 +24,7 @@ def main():
 
     biorxiv_email_list.close()
     pubmed_email_list.close()
-    print("\nrun command 'cat <site>_email_list.txt' to see results")
+    print("\nrun command 'cat " + args.site + "_email_list.txt' to see results")
 
 if __name__ == "__main__":
     main()
