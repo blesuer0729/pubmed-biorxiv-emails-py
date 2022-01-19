@@ -15,18 +15,18 @@ def scraper(file, span, url):
     name_tag = soup_content.find("span", "name")
     email_tag = soup_content.find("span", "em-addr")
 
-    if name_tag is None:
+    if name_tag is None and email_tag is not None:
         # Clean and fix the email as a string with @ included
         email_tag = soup_content.find("span", "em-addr")
         email_string = email_tag.string.extract()
         author_email = email_string.replace("{at}", "@")
         file.write(author_email + "\n")
-    elif email_tag is None:
+    elif email_tag is None and name_tag is not None:
         # Clean and fix the email as a string with @ included
-        email_tag = soup_content.find("span", "em-addr")
-        email_string = email_tag.string.extract()
-        author_email = email_string.replace("{at}", "@")
-        print("no email to write for " + name_tag)
+        author_name = name_tag.string.extract()
+        print("no email to write for " + author_name)
+    elif email_tag is None and name_tag is None:
+        print("no name or email found at the article => " + article_url)
     else:
         author_name = name_tag.string.extract()
         # Clean and fix the email as a string with @ included
