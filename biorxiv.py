@@ -1,6 +1,39 @@
 import requests
 from bs4 import BeautifulSoup
 
+def scraper(file, span, url):
+    # add into list newly built urls that go to content pages
+    string = span.text
+    # split is using an EM DASH 
+    article_url = url + string.split(" —")[0] + "v1.article-info"
+
+    # Get markup and read it into BS
+    page = requests.get(article_url).text
+    soup_content = BeautifulSoup(page, "html.parser")
+
+    # append the corresponding author name before the email 
+    name_tag = soup_content.find("span", "name")
+    email_tag = soup_content.find("span", "em-addr")
+
+    if name_tag is None:
+        # Clean and fix the email as a string with @ included
+        email_tag = soup_content.find("span", "em-addr")
+        email_string = email_tag.string.extract()
+        author_email = email_string.replace("{at}", "@")
+        file.write(author_email + "\n")
+    elif email_tag is None:
+        # Clean and fix the email as a string with @ included
+        email_tag = soup_content.find("span", "em-addr")
+        email_string = email_tag.string.extract()
+        author_email = email_string.replace("{at}", "@")
+        print("no email to write for " + name_tag)
+    else:
+        author_name = name_tag.string.extract()
+        # Clean and fix the email as a string with @ included
+        email_string = email_tag.string.extract()
+        author_email = email_string.replace("{at}", "@")
+        file.write(author_email + " " + author_name + "\n")
+
 def controller(file, start, stop):
     print("\nBiorxiv preprints related to Covid-19 and Sars-Cov-2")
     # fill in the range depending on which pages of the list you are scraping
@@ -28,32 +61,3 @@ def controller(file, start, stop):
             else:
                 print("WARNING -  " + link + " was not scraped because it's site needs to be added to the biorxiv scraper")
         print("done.")
-
-def scraper(file, span, url):
-    # add into list newly built urls that go to content pages
-    string = span.text
-    # split is using an EM DASH 
-    article_url = url + string.split(" —")[0] + "v1.article-info"
-
-    # Get markup and read it into BS
-    page = requests.get(article_url).text
-    soup_content = BeautifulSoup(page, "html.parser")
-
-    # append the corresponding author name before the email 
-    name_tag = soup_content.find("span", "name")
-    if name_tag is not None:
-        author_name = name_tag.string.extract()
-
-        # Clean and fix the email as a string with @ included
-        email_tag = soup_content.find("span", "em-addr")
-        email_string = email_tag.string.extract()
-        author_email = email_string.replace("{at}", "@")
-
-        file.write(author_email + " " + author_name + "\n")
-    else:
-        # Clean and fix the email as a string with @ included
-        email_tag = soup_content.find("span", "em-addr")
-        email_string = email_tag.string.extract()
-        author_email = email_string.replace("{at}", "@")
-
-        file.write(author_email + "\n")

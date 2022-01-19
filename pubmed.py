@@ -1,6 +1,27 @@
 import requests
 from bs4 import BeautifulSoup
 
+def scraper(file, url, temp_emails):
+    # Get soup content of article page
+    page = requests.get(url).text
+    soup_content = BeautifulSoup(page, "html.parser")
+
+    # the PMCID of the article is a link to a page containing the author info
+    article_ids = soup_content.findAll("a", {"data-ga-action" : "PMCID"})
+    for link in range(len(article_ids)):
+        article_pmc = article_ids[link]["href"]
+        convert_link = article_pmc.replace("http", "https")
+        page = requests.get(convert_link).text
+        soup_content = BeautifulSoup(page, "html.parser")
+    
+        # The source code of the article has author emails in reverse
+        # seems like they tried to confuse anyone looking to scrape them?
+        emails_in_reverse = soup_content.findAll("a", {"class" : "oemail"})
+        for email_tag in range(len(emails_in_reverse)):
+            if emails_in_reverse[email_tag]["data-email"][::-1] not in temp_emails:
+                temp_emails.append(emails_in_reverse[email_tag]["data-email"][::-1])
+                file.write(emails_in_reverse[email_tag]["data-email"][::-1] + "\n")
+
 def controller(file, start, stop):
     print("\nPubMed articles referencing Covid-19 and Sars-Cov-2")
     # fill in the range depending on which pages of the list you are scraping
@@ -23,24 +44,3 @@ def controller(file, start, stop):
             article_id = get_article_metadata[article]["href"]
             scraper(file, "https://pubmed.ncbi.nlm.nih.gov" + article_id, temp_emails)
         print("done.")
-
-def scraper(file, url, temp_emails):
-    # Get soup content of article page
-    page = requests.get(url).text
-    soup_content = BeautifulSoup(page, "html.parser")
-
-    # the PMCID of the article is a link to a page containing the author info
-    article_ids = soup_content.findAll("a", {"data-ga-action" : "PMCID"})
-    for link in range(len(article_ids)):
-        article_pmc = article_ids[link]["href"]
-        convert_link = article_pmc.replace("http", "https")
-        page = requests.get(convert_link).text
-        soup_content = BeautifulSoup(page, "html.parser")
-    
-        # The source code of the article has author emails in reverse
-        # seems like they tried to confuse anyone looking to scrape them?
-        emails_in_reverse = soup_content.findAll("a", {"class" : "oemail"})
-        for email_tag in range(len(emails_in_reverse)):
-            if emails_in_reverse[email_tag]["data-email"][::-1] not in temp_emails:
-                temp_emails.append(emails_in_reverse[email_tag]["data-email"][::-1])
-                file.write(emails_in_reverse[email_tag]["data-email"][::-1] + "\n")

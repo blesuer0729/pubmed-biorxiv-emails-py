@@ -11,13 +11,11 @@ args = parser.parse_args()
 
 # determine which site the user wanted to scrape first
 def main():
-    # email_list.txt is the final file shipped for import
-    biorxiv_email_list = open("biorxiv_email_list.txt", "w+")
-    pubmed_email_list = open("pubmed_email_list.txt", "w+")
-
     if (args.site == "biorxiv"):
+        biorxiv_email_list = open("biorxiv_email_list.txt", "w+")
         biorxiv.controller(biorxiv_email_list, args.start, args.stop)
     elif(args.site == "pubmed"):
+        pubmed_email_list = open("pubmed_email_list.txt", "w+")
         pubmed.controller(pubmed_email_list, args.start, args.stop)
     else:
         print("The site " + args.site + " is not yet supported by the scraper.")
