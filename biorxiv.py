@@ -46,13 +46,13 @@ def controller(file, start, stop):
         soup_content = BeautifulSoup(page, "html.parser")
 
         # find url extensions for each article
-        get_article_metadata = soup_content.find_all("span", "highwire-cite-metadata-journal")
+        get_articles_metadata = soup_content.find_all("span", "highwire-cite-metadata-journal")
 
         print("\nPage " + str(num))
         print("_________________")
         print("scraping..")
-        # test each article for its containing site
-        for span in get_article_metadata:
+        # test each article for its containing site and scrape that article
+        for span in get_articles_metadata:
             link = span.a['href']
             if "medrx" in link:
                 scraper(file, span, "https://www.medrxiv.org/content/")

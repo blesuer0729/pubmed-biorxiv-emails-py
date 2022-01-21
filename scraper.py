@@ -14,14 +14,14 @@ def main():
     if (args.site == "biorxiv"):
         biorxiv_email_list = open("biorxiv_email_list.txt", "w+")
         biorxiv.controller(biorxiv_email_list, args.start, args.stop)
+        biorxiv_email_list.close()
     elif(args.site == "pubmed"):
         pubmed_email_list = open("pubmed_email_list.txt", "w+")
         pubmed.controller(pubmed_email_list, args.start, args.stop)
+        pubmed_email_list.close()
     else:
         print("The site " + args.site + " is not yet supported by the scraper.")
 
-    biorxiv_email_list.close()
-    pubmed_email_list.close()
     print("\nrun command 'cat " + args.site + "_email_list.txt' to see results")
 
 if __name__ == "__main__":
